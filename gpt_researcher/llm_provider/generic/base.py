@@ -2,6 +2,7 @@ import importlib
 from typing import Any
 from colorama import Fore, Style, init
 import os
+from langchain.schema.messages import SystemMessage, AIMessage, HumanMessage
 
 _SUPPORTED_PROVIDERS = {
     "openai",
@@ -17,6 +18,7 @@ _SUPPORTED_PROVIDERS = {
     "huggingface",
     "groq",
     "bedrock",
+    "litellm"  # Added litellm support
 }
 
 
@@ -102,6 +104,10 @@ class GenericLLMProvider:
                 model_id = kwargs.pop("model", None) or kwargs.pop("model_name", None)
                 kwargs = {"model_id": model_id, **kwargs}
             llm = ChatBedrock(**kwargs)
+        elif provider == "litellm":  # Added litellm support
+            _check_pkg("litellm")
+            from ..litellm import LiteLLMProvider
+            llm = LiteLLMProvider(**kwargs)
         else:
             supported = ", ".join(_SUPPORTED_PROVIDERS)
             raise ValueError(
@@ -109,14 +115,21 @@ class GenericLLMProvider:
             )
         return cls(llm)
 
-
     async def get_chat_response(self, messages, stream, websocket=None):
         if not stream:
+            # Convert messages to LangChain format
+            lc_messages = []
+            for msg in messages:
+                if msg["role"] == "system":
+                    lc_messages.append(SystemMessage(content=msg["content"]))
+                elif msg["role"] == "assistant":
+                    lc_messages.append(AIMessage(content=msg["content"]))
+                else:  # user or any other role
+                    lc_messages.append(HumanMessage(content=msg["content"]))
+            
             # Getting output from the model chain using ainvoke for asynchronous invoking
-            output = await self.llm.ainvoke(messages)
-
+            output = await self.llm.ainvoke(lc_messages)
             return output.content
-
         else:
             return await self.stream_response(messages, websocket)
 
@@ -124,8 +137,18 @@ class GenericLLMProvider:
         paragraph = ""
         response = ""
 
+        # Convert messages to LangChain format
+        lc_messages = []
+        for msg in messages:
+            if msg["role"] == "system":
+                lc_messages.append(SystemMessage(content=msg["content"]))
+            elif msg["role"] == "assistant":
+                lc_messages.append(AIMessage(content=msg["content"]))
+            else:  # user or any other role
+                lc_messages.append(HumanMessage(content=msg["content"]))
+
         # Streaming the response using the chain astream method from langchain
-        async for chunk in self.llm.astream(messages):
+        async for chunk in self.llm.astream(lc_messages):
             content = chunk.content
             if content is not None:
                 response += content
@@ -156,3 +179,4 @@ def _check_pkg(pkg: str) -> None:
             Fore.RED + f"Unable to import {pkg_kebab}. Please install with "
             f"`pip install -U {pkg_kebab}`"
         )
+

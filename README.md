@@ -18,6 +18,22 @@
 
 </div>
 
+# GPT Researcher 🔍
+
+GPT Researcher is an autonomous agent designed to perform comprehensive online research on any given topic. The agent can generate detailed, factual, and unbiased research reports while providing citations for sources used.
+
+## 🎯 Key Features
+
+- Autonomous research capabilities on any topic
+- Generates detailed research reports with citations
+- Support for multiple LLM providers through LiteLLM integration
+- Configurable research parameters and report formats
+- Web search and source validation
+- Supports multiple languages
+
+## 🚀 Quick Start
+
+
 # 🔎 GPT Researcher
 
 **GPT Researcher is an autonomous agent designed for comprehensive web and local research on any given task.** 
@@ -229,3 +245,4 @@ Our view on unbiased research claims:
 <p align="right">
   <a href="#top">⬆️ Back to Top</a>
 </p>
+
