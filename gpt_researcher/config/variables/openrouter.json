@@ -1,12 +1,10 @@
-from .base import BaseConfig
-
-DEFAULT_CONFIG: BaseConfig = {
-    "RETRIEVER": "tavily",
+{
+    "RETRIEVER": "web",
     "EMBEDDING": "openai:text-embedding-3-small",
     "SIMILARITY_THRESHOLD": 0.6,
-    "FAST_LLM": "litellm:openrouter/openai/gpt-4o-mini",  # Using OpenRouter GPT-4
-    "SMART_LLM": "litellm:openrouter/openai/gpt-4o-2024-08-06",  # Using OpenRouter GPT-4
-    "STRATEGIC_LLM": "litellm:openrouter/openai/gpt-4o-2024-08-06",  # Using OpenRouter GPT-4
+    "FAST_LLM": "litellm:openrouter/openai/gpt-4o-mini",
+    "SMART_LLM": "litellm:openrouter/openai/gpt-4o-2024-08-06",
+    "STRATEGIC_LLM": "litellm:openrouter/openai/gpt-4o-2024-08-06",
     "FAST_TOKEN_LIMIT": 2000,
     "SMART_TOKEN_LIMIT": 4000,
     "BROWSE_CHUNK_MAX_LENGTH": 8192,
@@ -19,10 +17,10 @@ DEFAULT_CONFIG: BaseConfig = {
     "TOTAL_WORDS": 1000,
     "REPORT_FORMAT": "APA",
     "MAX_ITERATIONS": 4,
-    "AGENT_ROLE": None,
+    "AGENT_ROLE": null,
     "SCRAPER": "bs",
     "MAX_SUBTOPICS": 3,
-    "REPORT_SOURCE": None,
+    "REPORT_SOURCE": null,
     "DOC_PATH": "./my-docs"
 }
 
